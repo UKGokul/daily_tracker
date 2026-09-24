@@ -1,5 +1,5 @@
 # DayLens
-
+https://ukgokul.github.io/daily_tracker/#today
 **See what shapes your days.**
 
 DayLens is a privacy-first, local-first personal analytics dashboard that combines lightweight task planning, custom habits/metrics, sleep, focus time, spending and daily notes into one understandable view of the day.
