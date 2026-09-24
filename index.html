@@ -1,233 +1,77 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daily Habit Tracker</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#07111f" />
+  <meta name="description" content="DayLens — a privacy-first personal analytics dashboard. See what shapes your days." />
+  <title>DayLens — See what shapes your days</title>
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="stylesheet" href="src/styles.css" />
+  <script src="config.js" defer onerror="this.remove()"></script>
 </head>
-
 <body>
-    <div class="app-background"></div>
-    <div class="app-container">
-        <header class="header glass-panel">
-            <div class="header-left">
-                <div class="logo">
-                    <i class="fas fa-layer-group logo-icon"></i>
-                    <h1 class="app-title">DailyTracker</h1>
-                </div>
-            </div>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Primary navigation">
+      <a class="brand" href="#today" aria-label="DayLens home">
+        <span class="brand-mark" aria-hidden="true">◐</span>
+        <span><strong>DayLens</strong><small>See what shapes your days.</small></span>
+      </a>
+      <nav class="nav-list" id="desktopNav">
+        <button class="nav-item is-active" data-view="today"><span>⌂</span>Today</button>
+        <button class="nav-item" data-view="calendar"><span>▦</span>Calendar</button>
+        <button class="nav-item" data-view="insights"><span>⌁</span>Insights</button>
+        <button class="nav-item" data-view="settings"><span>⚙</span>Settings</button>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="privacy-pill"><span class="status-dot"></span><span>Local-first</span></div>
+        <p>Your data stays on this device unless you enable cloud sync.</p>
+      </div>
+    </aside>
 
-            <div class="date-navigator">
-                <button id="prevDateBtn" class="icon-btn" title="Previous Day"><i
-                        class="fas fa-chevron-left"></i></button>
-                <div class="current-date-display" id="dateDisplay">
-                    <span class="date-day">Today</span>
-                    <span class="date-full">Oct 24, 2023</span>
-                </div>
-                <button id="nextDateBtn" class="icon-btn" title="Next Day"><i class="fas fa-chevron-right"></i></button>
-                <button id="todayBtn" class="btn-small">Today</button>
-            </div>
+    <div class="app-main">
+      <header class="topbar">
+        <button class="brand compact-brand" data-view="today" aria-label="DayLens home"><span class="brand-mark">◐</span><strong>DayLens</strong></button>
+        <div class="date-nav" aria-label="Date navigation">
+          <button class="icon-button" id="prevDay" aria-label="Previous day">‹</button>
+          <button class="date-button" id="dateButton" aria-label="Jump to date"><span id="dateEyebrow">Today</span><strong id="dateLabel"></strong></button>
+          <button class="icon-button" id="nextDay" aria-label="Next day">›</button>
+          <button class="text-button" id="todayButton" hidden>Today</button>
+        </div>
+        <div class="topbar-actions">
+          <button class="icon-button" id="themeButton" aria-label="Change theme">◒</button>
+          <button class="button button-primary" id="quickAddButton"><span>＋</span><span class="button-label">Quick add</span></button>
+        </div>
+      </header>
 
-            <div class="header-right">
-                <button id="viewHistoryBtn" class="btn-primary">
-                    <i class="fas fa-chart-line"></i>
-                    <span>History</span>
-                </button>
-            </div>
-        </header>
-
-        <main class="dashboard-grid">
-            <!-- ======== SMALL WIDGETS ======== -->
-
-            <!-- 1. Joints Smoked -->
-            <div class="widget small-widget glass-panel interactive-widget" id="widget-joints">
-                <div class="widget-header">
-                    <h2><i class="fas fa-smoking icon-green"></i> Joints Smoked</h2>
-                </div>
-                <div class="widget-content center-content">
-                    <div class="counter-control">
-                        <button id="jointsMinus" class="counter-btn"><i class="fas fa-minus"></i></button>
-                        <span id="jointsCount" class="counter-value">0</span>
-                        <button id="jointsPlus" class="counter-btn"><i class="fas fa-plus"></i></button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 5. Bath / Shower -->
-            <div class="widget small-widget glass-panel interactive-widget" id="widget-bath">
-                <div class="widget-header">
-                    <h2><i class="fas fa-shower icon-blue"></i> Shower</h2>
-                </div>
-                <div class="widget-content center-content">
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="bathToggle">
-                        <span class="slider round"></span>
-                    </label>
-                    <span id="bathLabel" class="status-label">Not Yet</span>
-                </div>
-            </div>
-
-            <!-- Wake/Sleep -->
-            <div class="widget small-widget glass-panel interactive-widget" id="widget-sleep">
-                <div class="widget-header">
-                    <h2><i class="fas fa-bed icon-purple"></i> Schedule</h2>
-                </div>
-                <div class="widget-content input-group-col">
-                    <div class="time-input">
-                        <label title="Wake up time"><i class="fas fa-sun"></i> Wake:</label>
-                        <input type="time" id="wakeTime" class="premium-input">
-                    </div>
-                    <div class="time-input">
-                        <label title="Sleep time"><i class="fas fa-moon"></i> Sleep:</label>
-                        <input type="time" id="sleepTime" class="premium-input">
-                    </div>
-                </div>
-            </div>
-
-            <!-- Budget -->
-            <div class="widget small-widget glass-panel interactive-widget" id="widget-budget">
-                <div class="widget-header">
-                    <h2><i class="fas fa-wallet icon-gold"></i> Budget</h2>
-                </div>
-                <div class="widget-content input-group-col">
-                    <div class="currency-input">
-                        <label class="text-success"><i class="fas fa-arrow-down"></i> In:</label>
-                        <div class="input-with-icon premium-input-wrapper">
-                            <span>$</span>
-                            <input type="number" id="budgetIncome" placeholder="0" class="premium-input no-spinners">
-                        </div>
-                    </div>
-                    <div class="currency-input">
-                        <label class="text-danger"><i class="fas fa-arrow-up"></i> Out:</label>
-                        <div class="input-with-icon premium-input-wrapper">
-                            <span>$</span>
-                            <input type="number" id="budgetSpend" placeholder="0" class="premium-input no-spinners">
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-            <!-- ======== MEDIUM WIDGETS ======== -->
-
-            <!-- 4. Food Tracker -->
-            <div class="widget medium-widget glass-panel full-height" id="widget-food">
-                <div class="widget-header">
-                    <h2><i class="fas fa-utensils icon-orange"></i> Food Diary</h2>
-                </div>
-                <div class="widget-content">
-                    <div class="food-grid">
-                        <div class="textarea-group">
-                            <label><i class="fas fa-coffee"></i> Breakfast</label>
-                            <textarea id="foodBreakfast" rows="2" class="premium-input"
-                                placeholder="What did you eat?"></textarea>
-                        </div>
-                        <div class="textarea-group">
-                            <label><i class="fas fa-hamburger"></i> Lunch</label>
-                            <textarea id="foodLunch" rows="2" class="premium-input"
-                                placeholder="What did you eat?"></textarea>
-                        </div>
-                        <div class="textarea-group">
-                            <label><i class="fas fa-cookie"></i> Snacks</label>
-                            <textarea id="foodSnacks" rows="2" class="premium-input"
-                                placeholder="What did you eat?"></textarea>
-                        </div>
-                        <div class="textarea-group">
-                            <label><i class="fas fa-pizza-slice"></i> Dinner</label>
-                            <textarea id="foodDinner" rows="2" class="premium-input"
-                                placeholder="What did you eat?"></textarea>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 3. Workout Routine -->
-            <div class="widget medium-widget glass-panel flex-col-widget" id="widget-workout">
-                <div class="widget-header">
-                    <h2><i class="fas fa-dumbbell icon-red"></i> Workout Routines (Today)</h2>
-                </div>
-                <div class="widget-content flex-grow-content">
-                    <div class="list-container" id="workoutList">
-                        <!-- Dynamic list items added here -->
-                        <div class="empty-state">No workouts added yet.</div>
-                    </div>
-                    <form class="add-item-form" id="workoutForm">
-                        <input type="text" id="workoutInput" class="premium-input"
-                            placeholder="Add an exercise (e.g., 30 Pushups)..." required>
-                        <button type="submit" class="btn-secondary"><i class="fas fa-plus"></i></button>
-                    </form>
-                </div>
-            </div>
-
-
-            <!-- ======== LARGE WIDGETS ======== -->
-
-            <!-- 2. Tasks for Next Day -->
-            <div class="widget large-widget glass-panel flex-col-widget" id="widget-tasks">
-                <div class="widget-header">
-                    <h2><i class="fas fa-list-check icon-teal"></i> Tasks for Today</h2>
-                </div>
-                <div class="widget-content flex-grow-content">
-                    <div class="list-container large-list" id="taskList">
-                        <!-- Dynamic tasks -->
-                        <div class="empty-state">No tasks scheduled for Today.</div>
-                    </div>
-                    <form class="add-item-form" id="taskForm">
-                        <input type="text" id="taskInput" class="premium-input"
-                            placeholder="What do you need to do Today" required>
-                        <button type="submit" class="btn-secondary">Add Task</button>
-                    </form>
-                </div>
-            </div>
-
-            <!-- 6. Work Hours / Projects -->
-            <div class="widget large-widget glass-panel flex-col-widget" id="widget-work">
-                <div class="widget-header">
-                    <h2><i class="fas fa-laptop-code icon-blue"></i> Work / Projects Tracker</h2>
-                </div>
-                <div class="widget-content flex-grow-content">
-                    <div class="list-container large-list" id="workList">
-                        <!-- Dynamic work entries -->
-                        <div class="empty-state">No work sessions logged yet.</div>
-                    </div>
-
-                    <form class="add-work-form glass-panel-inner" id="workForm">
-                        <div class="work-inputs-row">
-                            <div class="time-range-group">
-                                <label>From</label>
-                                <input type="time" id="workStartTime" class="premium-input" required>
-                            </div>
-                            <div class="time-range-sep"><i class="fas fa-arrow-right"></i></div>
-                            <div class="time-range-group">
-                                <label>To</label>
-                                <input type="time" id="workEndTime" class="premium-input" required>
-                            </div>
-                        </div>
-                        <div class="work-inputs-row mt-3">
-                            <div class="project-group">
-                                <label>Project / Description</label>
-                                <input type="text" id="workProjectInput" class="premium-input full-width-input"
-                                    placeholder="e.g., Freelance Client A - Fix Bugs" required>
-                            </div>
-                            <button type="submit" class="btn-primary align-bottom">Log Session</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-
-        </main>
+      <main id="main" tabindex="-1">
+        <section class="view is-active" data-view-panel="today" id="todayView"></section>
+        <section class="view" data-view-panel="calendar" id="calendarView"></section>
+        <section class="view" data-view-panel="insights" id="insightsView"></section>
+        <section class="view" data-view-panel="settings" id="settingsView"></section>
+      </main>
     </div>
+  </div>
 
-    <!-- Notification Toast -->
-    <div id="toast" class="toast">Saved automatically</div>
+  <nav class="mobile-nav" id="mobileNav" aria-label="Primary navigation">
+    <button class="is-active" data-view="today"><span>⌂</span><small>Today</small></button>
+    <button data-view="calendar"><span>▦</span><small>Calendar</small></button>
+    <button data-view="insights"><span>⌁</span><small>Insights</small></button>
+    <button data-view="settings"><span>⚙</span><small>Settings</small></button>
+  </nav>
 
-    <script src="app.js"></script>
+  <div class="modal-backdrop" id="modalBackdrop" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-header"><div><span class="eyebrow" id="modalEyebrow">DayLens</span><h2 id="modalTitle">Add</h2></div><button class="icon-button" id="modalClose" aria-label="Close dialog">×</button></div>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+
+  <div class="toast-stack" id="toastStack" aria-live="polite"></div>
+  <input type="file" id="importInput" accept="application/json" hidden />
+  <input type="date" id="datePicker" hidden />
+
+  <script type="module" src="src/main.js"></script>
 </body>
-
 </html>
